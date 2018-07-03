@@ -60,23 +60,32 @@
                         <i class="fa fa-bell fa-fw"></i><i class="fa fa-caret-down"></i>
 
                     </a>
-                    <ul class="dropdown-menu dropdown-user" >
+                    <ul class="dropdown-menu dropdown-user" id="order-notify">
                        
-                         <li><h5 style="padding-left: 3px; background-color: white">You have 5 notifications</h5></li>
+                         <li><h5 style="padding-left: 3px; background-color: white">You have <?php echo $countNotifications;   ?> notifications</h5></li>
                          <hr style="padding: 0px; margin: 0px; color: #fff">
-                         <li><a href="#"><i class="fa fa-sign-out fa-fw"></i>
-                         <i style="padding-left: 2px;font-size: 2;margin-left: 2px">New Order: 438 </i></a>
+                         
+                    <?php   foreach($todaysOrders as $order):   ?>
+                        <li><a href="#"><i class="fa fa-sign-out fa-fw"></i>
+                         <i style="padding-left: 2px;font-size: 2;margin-left: 2px">New Order:<?php echo $order['Order_id'];  ?></i></a>
                         </li>
                         <li><a href="#"><i class="fa fa-sign-out fa-fw"></i>
-                        <i style="padding-left: 2px;font-size: 2;margin-left: 2px">Table Assistance: 3</i></a>
+                        <i style="padding-left: 2px;font-size: 2;margin-left: 2px">Table Assistance: <?php echo $order['Table_id'];  ?></i></a>
                         </li>
+                    <?php   endforeach; ?>
+                    <?php   foreach($preparedList as $prepared):   ?>
                         <li><a href="#"><i class="fa fa-sign-out fa-fw"></i>
-                         <i style="padding-left: 2px;font-size: 2;margin-left: 2px">Order Served: 432 </i></a>
+                         <i style="padding-left: 2px;font-size: 2;margin-left: 2px">Order Preparation Timeout :<?php echo $prepared['Order_id']; ?> </i></a>
                         </li>
+                        
+                    <?php   endforeach; ?>
+
+                    <?php   foreach($servedOrders as $order):   ?>
                         <li><a href="#"><i class="fa fa-sign-out fa-fw"></i>
-                        <i style="padding-left: 2px;font-size: 2;margin-left: 2px">Table Assistance: 2</i></a>
+                         <i style="padding-left: 2px;font-size: 2;margin-left: 2px">Order Ready To Serve:<?php echo $order['Order_id']; ?> </i></a>
                         </li>
-                  
+                        
+                    <?php   endforeach; ?>
                    
                     </ul>
                 </li>
@@ -552,6 +561,7 @@
 	<script>
 	$(document).ready(function(){
 		setInterval(checkLiveOrder,(5*1000));
+        setInterval(liveNotification,5000);
 	});
 	function checkLiveOrder(){
 		$.ajax({
@@ -564,6 +574,48 @@
 			}
 		});
 	}
+
+    function liveNotification(){
+        $.ajax({
+			url: "<?php echo base_url();?>index.php/Admin/ajax_notify",
+            method:"GET",
+            dataType:"json",
+			success: function(data){
+				console.log(data);
+                var popup = document.getElementById("order-notify");
+                popup.innerHTML="";
+                
+                popup.innerHTML+=`<li><h5 style="padding-left: 3px; background-color: white">You have `+data.countNotifications+` notifications</h5></li>
+                         <hr style="padding: 0px; margin: 0px; color: #fff">`;
+                         
+                    data.todaysOrders.forEach(function(obj){
+                        popup.innerHTML+=`<li><a href="#"><i class="fa fa-sign-out fa-fw"></i>
+                         <i style="padding-left: 2px;font-size: 2;margin-left: 2px">New Order:`+obj.Order_id+`</i></a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-sign-out fa-fw"></i>
+                        <i style="padding-left: 2px;font-size: 2;margin-left: 2px">Table Assistance: `+obj.Table_id+`</i></a>
+                        </li>`;
+                    });
+                        
+                
+                    data.preparedList.forEach(function(obj){
+                        popup.innerHTML+=`<li><a href="#"><i class="fa fa-sign-out fa-fw"></i>
+                         <i style="padding-left: 2px;font-size: 2;margin-left: 2px">Order Preparation Timeout :`+obj.Order_id+` </i></a>
+                        </li>`;
+
+                    });
+                        
+                    
+
+                    data.servedOrders.forEach(function(obj){
+                        popup.innerHTML+=`<li><a href="#"><i class="fa fa-sign-out fa-fw"></i>
+                         <i style="padding-left: 2px;font-size: 2;margin-left: 2px">Order Ready To Serve:`+obj.Order_id+` </i></a>
+                        </li>`;
+                    });        
+                
+			}
+		});
+    }
 
 	</script>
 	<script>

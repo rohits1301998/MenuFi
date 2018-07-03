@@ -1287,7 +1287,7 @@ if(!isset($_SESSION['admin_id']))
     
         $username = $this->session->userdata('User');
     
-        $table= "<table class='' style='font-size: 16px;'><tr><td colspan='4' align='center' style='font-weight:bold;font-size: 24px;'>".$result123['0']['name']."</td></tr>
+        $table= "<table  class='' style='font-size: 15px;'><tr><td colspan='4' align='center' style='font-weight:bold;font-size: 24px;'>".$result123['0']['name']."</td></tr>
           <tr><td colspan='4' style='font-weight:bold;font-size: 14px;' align='center'>".$address1."</td></tr>
           <tr><td colspan='4' style='font-weight:bold;font-size: 14px;' align='center'>".$address2."</td></tr>
           <tr ><td colspan='4' style='font-weight:bold;font-size: 14px;' align='center'>( ".$result123['0']['contact']." )</td></tr>
@@ -1302,9 +1302,10 @@ if(!isset($_SESSION['admin_id']))
               <td>Type : ".$printData[0]['order_type']."</td>
             </tr>
             <tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
-            <tr>
-              <td style='padding-top:10px;'> Bill Details </td><td>Quantity</td><td>Amount</td>
-            </tr>";
+            <tr style='font-weight:bold;'>
+              <td style=''> Bill Details </td><td>Quantity</td><td>Amount</td>
+            </tr><tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
+            <tr>";
     
             $total=0;
           foreach($printData as $data ){
@@ -1334,9 +1335,11 @@ if(!isset($_SESSION['admin_id']))
           
     
           $table .="
+            <tr><tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
             <tr>
-              <td></td><td>Total</td><td>".$total."</td>
-            </tr>";
+              <td></td><td style='font-weight:bold'>Total</td><td>".$total."</td>
+            </tr><tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
+            <tr>";
           
           if($printData['0']['coupon_apply']=='1'){
             $table .="
@@ -1375,7 +1378,7 @@ if(!isset($_SESSION['admin_id']))
         $table= "<table  class='' style='font-size: 16px;'><tr><td colspan='4' align='center' style='font-weight:bold;font-size: 24px;'></td></tr>
           
     
-          <tr ><td colspan='4' style='font-weight:bold;font-size: 23px;' align='center'>(TABLE NO : ".$table_id." )</td></tr>
+          <tr ><td colspan='4' style='font-weight:bold;font-size: 21px;' align='center'>(TABLE NO : ".$table_id." )</td></tr>
           ";
           foreach($orders as $r){
               $addons = $r['addon'];
@@ -1388,10 +1391,10 @@ if(!isset($_SESSION['admin_id']))
               $name = $re[0]['Name'];
             $table .="<tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
             <tr style='text-align:center'>
-            <td colspan='4' style='font-size:25px;' align='center'>".$quantity." </td>
+            <td colspan='4' style='font-size:25px;' align='center'>".$name." </td>
             </tr>
             <tr style='text-align:center'>
-              <td colspan='4' align='center' style='font-size:20px;'> ".$name." </td>
+            <td colspan='4' style='font-size:23px;' align='center'>Quantity : ".$quantity." </td>
             </tr>";
             $batter = $r['batter'];
             $res = $this->db->query("SELECT * FROM batter WHERE id='$batter'");
@@ -1519,6 +1522,7 @@ if(!isset($_SESSION['admin_id']))
         $Order_id = $_GET['Order_id'];
         $addess = $_GET['address'];
         $name = $_GET['name'];
+        $number = $_GET['number'];
         //$Order_id='520';
         $this->load->model('Admin_model');
         $printData = $this->Admin_model->get_print_details($Order_id);
@@ -1550,9 +1554,11 @@ if(!isset($_SESSION['admin_id']))
               <td>Type : ".$printData[0]['order_type']."</td>
             </tr>
             <tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
-            <tr>
-              <td style='padding-top:10px;'> Bill Details </td><td>Quantity</td><td>Amount</td>
-            </tr>";
+            <tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
+            
+              <td style=''> Bill Details </td><td>Quantity</td><td>Amount</td>
+            </tr><tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
+            ";
     
             $total=0;
           foreach($printData as $data ){
@@ -1581,9 +1587,10 @@ if(!isset($_SESSION['admin_id']))
           }
           
     
-          $table .="
+          $table .="<tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
+           
             <tr>
-              <td></td><td>Total</td><td>".$total."</td>
+              <td></td><td style='font-weight:bold'>Total</td><td>".$total."</td>
             </tr>";
           
           if($printData['0']['coupon_apply']=='1'){
@@ -1599,8 +1606,10 @@ if(!isset($_SESSION['admin_id']))
           }
          
     
-          $table .="
+          $table .="<tr><td colspan='4' style='border-bottom-style: dotted;border-width: 1px;'></td></tr>
+            
           <tr><td>Name: </td><td>".$name."</td></tr>
+          <tr><td>Number: </td><td>".$number."</td></tr>
           <tr><td>Address: </td><td>".$addess."</td></tr>
             <tr><td colspan='4' style='font-weight:bold;font-size: 14px;padding-top:10px;' align='center'>
               Thank you visit again!
@@ -1627,8 +1636,23 @@ if(!isset($_SESSION['admin_id']))
         $data['orders'] = $this->Admin_model->order_list();
         $data['total'] = $this->Admin_model->total_orders();
         $data['query'] = $this->Admin_model->getAllOrder();
+        $data['preparedList']=$this->Admin_model->preparationTimeout();
+        $data['servedOrders']=$this->Admin_model->orderReady();
+        $data['countNotifications']=sizeOf($data['todaysOrders']) + sizeOf($data['preparedList']) + sizeOf($data['servedOrders']); 
         $this->load->view('tablestatus',$data);
+        //print_r($data['preparedList']);
     }
+
+    public function ajax_notify(){
+        $this->load->model('Admin_model');
+        $data['todaysOrders'] = $this->Admin_model->total_orders();
+        $data['preparedList']=$this->Admin_model->preparationTimeout();
+        $data['servedOrders']=$this->Admin_model->orderReady();
+        $data['countNotifications']=sizeOf($data['todaysOrders']) + sizeOf($data['preparedList']) + sizeOf($data['servedOrders']); 
+        echo json_encode($data);
+        
+    }
+
     //Takeaway part
     public function TakeAway()
     {

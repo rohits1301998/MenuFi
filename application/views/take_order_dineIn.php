@@ -337,6 +337,7 @@ if(mysqli_num_rows($res)>0){
                             $rk = $rg -> fetch_assoc();
                             $add = $rk['address'];
 							$name = $rk['name'];
+							$number = $mob;
 
 								
 							}
@@ -366,7 +367,8 @@ if(mysqli_num_rows($res)>0){
                                 </h4>
 								<?php if($table_no == 'Home Delivery'){ ?>
 								<p><strong>Name:</strong> <?php if(isset($name)){echo $name;} ?><br><br>
-                        <strong>Address:</strong> <?php if(isset($add)){echo $add;} ?>
+								<strong>Number:</strong> <?php if(isset($number)){echo $number;} ?>	<br><br>
+                	    <strong>Address:</strong> <?php if(isset($add)){echo $add;} ?>
 								<?php } ?>
                     </p>
 
@@ -385,7 +387,8 @@ if(mysqli_num_rows($res)>0){
                                         <br>
                                         <input type="submit" value="Pay" class="btn btn-success form-control" 
 										<?php if($table_no == 'Home Delivery'){ ?>
-											onclick="showModal('<?php echo $idr; ?>','<?php echo $table_no ?>');print_home('<?php echo $idr; ?>','<?php if(isset($add)){echo $add;}?>','<?php if(isset($name)){echo $name;} ?>');"
+											onclick="showModal('<?php echo $idr; ?>','<?php echo $table_no ?>');print_home('<?php echo $idr; ?>','<?php if(isset($add)){echo $add;}?>','<?php if(isset($name)){echo $name;} ?>','<?php
+											if(isset($number)){echo $number;} ?>');"
 										<?php }else{ ?>
 										onclick="showModal('<?php echo $idr; ?>','<?php echo $table_no ?>');" 
 										
@@ -891,7 +894,7 @@ function getOfflineOrders(){
     console.log(id);
 }
 
-function print_home(id,address,name){
+function print_home(id,address,name,number){
            // var divContents = $("#printspan"+id).html();
                var printWindow = window.open('', '', 'height=300,width=600');
     //             printWindow.document.write(`<html><head><style>@page {
@@ -909,7 +912,8 @@ function print_home(id,address,name){
                 data : {
                     'Order_id':id,
                     'name': name,
-                    'address': address
+                    'address': address,
+                    'number':number
                 },
                 cache:false,
                 dataType:'html',
@@ -949,7 +953,7 @@ function print_home(id,address,name){
                     if(resp == 'success'){
                        //sendDelivery(id);
                       pay_it(id);
-                      window.location = '';
+                     // window.location = '';
 
                     }
 
@@ -1093,7 +1097,7 @@ function pay_it(id){
                 success: function(resp){
                     console.log(resp);
                     if(resp == 'success'){
-                       // window.location = '';
+                        window.location = '';
                     }
 
             }
